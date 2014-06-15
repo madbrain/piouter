@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 public class User {
@@ -31,7 +32,7 @@ public class User {
     }
 
     public Collection<User> getFollowing() {
-        return following;
+        return Collections.unmodifiableCollection(following);
     }
 
     @Override

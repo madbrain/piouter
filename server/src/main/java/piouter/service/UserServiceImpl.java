@@ -1,6 +1,5 @@
 package piouter.service;
 
-import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import piouter.dto.UserDto;
@@ -22,11 +21,15 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserDto getUserDto(User user){
-        String id = user.getId();
-        Collection<User> following = user.getFollowing();
-        Collection<UserDto> followingDto = new ArrayList<UserDto>(following.size());
-        following.forEach(u -> followingDto.add(getUserDto(u)));
-        return new UserDto(id,followingDto);
+        UserDto userDto = null;
+        if(user!=null){
+            String id = user.getId();
+            Collection<User> following = user.getFollowing();
+            Collection<UserDto> followingDto = new ArrayList<UserDto>(following.size());
+            following.forEach(u -> followingDto.add(getUserDto(u)));
+            userDto = new UserDto(id,followingDto);
+        }
+        return userDto;
     }
 
     @Transactional

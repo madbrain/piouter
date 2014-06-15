@@ -2,6 +2,7 @@ package piouter.dto;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 
 public class UserDto implements Serializable {
     private final String id;
@@ -13,7 +14,7 @@ public class UserDto implements Serializable {
     }
 
     public Collection<UserDto> getFollowing() {
-        return following;
+        return Collections.unmodifiableCollection(following);
     }
 
     public String getId() {
