@@ -16,7 +16,7 @@ public class UserController {
     private UserService userService;
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.GET,value = "/{id}")
+    @RequestMapping(method = RequestMethod.GET,value = "{id}")
     public UserDto getUser(@PathVariable("id") String id){
         return userService.getUserWithFollowing(id);
     }

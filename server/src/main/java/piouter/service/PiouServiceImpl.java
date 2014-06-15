@@ -45,6 +45,14 @@ public class PiouServiceImpl implements PiouService {
         }
     }
 
+    @Override
+    public void piouter(String userId, String message) {
+        User user = userRepository.findOne(userId);
+        if(user!=null){
+            piouRepository.save(new Piou(user,message));
+        }
+    }
+
     private PiouDto getPiouDto(Piou piou){
         return new PiouDto(piou.getUser().getId(),piou.getMessage(),piou.getDate());
     }
