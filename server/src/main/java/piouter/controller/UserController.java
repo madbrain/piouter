@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import piouter.dto.ResponseDto;
 import piouter.dto.UserDto;
 import piouter.service.UserService;
 
@@ -19,5 +20,11 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET,value = "{id}")
     public UserDto getUser(@PathVariable("id") String id){
         return userService.getUserWithFollowing(id);
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.PUT,value = "{id}")
+    public ResponseDto create(@PathVariable("id") String id){
+        return userService.create(id);
     }
 }
