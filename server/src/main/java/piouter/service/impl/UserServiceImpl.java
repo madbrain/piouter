@@ -10,6 +10,9 @@ import piouter.service.UserService;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -21,21 +24,39 @@ public class UserServiceImpl implements UserService {
         return getUserDto(userRepository.findOne(id));
     }
 
+    @Override
+    @Transactional
+    public List<UserDto> getUsersMatching(String pattern) {
+        return userRepository.findMatchingIdIgnoreCaseOrderById(makePattern(pattern)).stream()
+                .collect(Collectors.mapping(user -> getSimpleUserDto(user), Collectors.toList()));
+    }
+
+    @Transactional
+    public Collection<User> getFollowers(String id){
+        return userRepository.findOne(id).getFollowing();
+    }
+
     private UserDto getUserDto(User user){
         UserDto userDto = null;
         if(user!=null){
             String id = user.getId();
             Collection<User> following = user.getFollowing();
             Collection<UserDto> followingDto = new ArrayList<UserDto>(following.size());
-            following.forEach(u -> followingDto.add(getUserDto(u)));
+            following.forEach(u -> followingDto.add(getSimpleUserDto(u)));
             userDto = new UserDto(id,followingDto);
         }
         return userDto;
     }
 
-    @Transactional
-    public Collection<User> getFollowers(String id){
-        return userRepository.findOne(id).getFollowing();
+    private UserDto getSimpleUserDto(User user) {
+        if(user!=null){
+            return new UserDto(user.getId(), Collections.emptyList());
+        }
+        return null;
+    }
+
+    private static String makePattern(String pattern) {
+        return "%" + pattern.toLowerCase() + "%";
     }
 
 }

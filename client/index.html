@@ -58,17 +58,24 @@
 						<h3 class="panel-title">Followees</h3>
 					</div>
 					<div class="panel-body">
-						<span>Pas de Followee.</span>
-						<ul>
-							<li>
-								Joe
-								<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button>
-							</li>
-							<li>
-								SuperMan
-								<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button>
-							</li>
-						</ul>
+						<span ng-show="user.following.length == 0">Pas de Followee.</span>
+						<div ng-hide="user.following.length == 0">
+							<ul>
+								<li ng-repeat="followee in user.following">
+									{{followee.id}}
+									<button type="button" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></button>
+								</li>
+							</ul>
+
+							<input type="text" class="form-control"
+									ng-keypress="fetchMatchingUsers()" ng-model="newFolloweeName">
+							<ul class="list-group">
+								<li class="list-group-item" ng-repeat="user in filteredUsers">
+      								<span ng-bind="user.id"></span>
+									<button type="button" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-plus"></span></button>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div> 
 			</div>
