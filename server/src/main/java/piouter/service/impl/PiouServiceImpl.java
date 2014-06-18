@@ -1,4 +1,4 @@
-package piouter.service;
+package piouter.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +8,8 @@ import piouter.entity.Piou;
 import piouter.entity.User;
 import piouter.repository.PiouRepository;
 import piouter.repository.UserRepository;
+import piouter.service.PiouService;
+import piouter.service.UserService;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +30,10 @@ public class PiouServiceImpl implements PiouService {
     public Collection<PiouDto> getTimeline(String id) {
         Collection<PiouDto> piouDtos = new ArrayList<PiouDto>();
         UserDto userDto = userService.getUserWithFollowing(id);
-        userDto.getFollowing().forEach(u -> piouDtos.addAll(getPublished(u.getId())));
+        if (userDto != null) {
+            userDto.getFollowing().forEach(u -> piouDtos.addAll(getPublished(u.getId())));
+            return piouDtos;
+        }
         return piouDtos;
     }
 

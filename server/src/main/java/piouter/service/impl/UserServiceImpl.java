@@ -1,10 +1,11 @@
-package piouter.service;
+package piouter.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import piouter.dto.UserDto;
 import piouter.entity.User;
 import piouter.repository.UserRepository;
+import piouter.service.UserService;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
