@@ -75,16 +75,17 @@
 
 			<div class="col-md-9">
 				<div class="input-group">
-					<input type="text" class="form-control" ng-model="text">
+                    <input type="text" class="form-control" ng-model="to">
+                    <input type="text" class="form-control" ng-model="message">
 					<span class="input-group-btn">
 						<button class="btn btn-default" type="button" ng-click="send()">Envoyer</button>
 					</span>
 				</div><!-- /input-group -->
 
 				<ul class="list-group">
-					<li class="list-group-item" ng-repeat="piout in piouts">
-      					<h2><span ng-bind="piout.userId"></span></h2>
-      					<p><span ng-bind="piout.message"></span></p>
+					<li class="list-group-item" ng-repeat="piou in pious">
+      					<h2><span ng-bind="piou.userId"></span></h2>
+      					<p><span ng-bind="piou.message"></span></p>
 					</li>
 				</ul>
 			</div>
