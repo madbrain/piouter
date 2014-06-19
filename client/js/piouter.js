@@ -1,39 +1,25 @@
 
-var app = angular.module('app', []);
-
+var app = angular.module('app', ['ngResource']);
 //app.config(['$httpProvider', function($httpProvider) {
 //        $httpProvider.defaults.useXDomain = true;
 //        delete $httpProvider.defaults.headers.common['X-Requested-With'];
 //    }]);
 
 app.constant('userId', 'thebignet');
+$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
-app.controller('TestCtrl', function ($scope, $http, $log, userId) {
+
+app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
     
 	$scope.text = 'Test text';
-	$scope.piouts = [];
+	var Piou = $resource('http://localhost:8080/piou/:userId', {userId:'@id'});
 
     $scope.send = function () {
-		var data = {
-			'message': $scope.text,
-		};
-		$http({
-			method: 'POST',
-			url: 'http://localhost:8080/piou/' + 'devoxxFr',
-			data: "message=" + $scope.text,
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		}).then(function (response) {
-			$log.info(response.data);
-			$scope.list();
-		});
+        $log.info("avant");
+        Piou.save({id:'devoxxFR',message:$scope.text});
+        $log.info("après");
     };
 
-    $scope.list = function () {
-        $http.get('http://localhost:8080/piou/' + userId)
-			.then(function (response) {
-            	$scope.piouts = response.data;
-            });
-    };
+    $scope.piouts = Piou.query({userId:userId});
 
-	$scope.list();
 });
