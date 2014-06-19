@@ -6,6 +6,7 @@ import piouter.dto.PiouDto;
 import piouter.dto.UserDto;
 import piouter.entity.Piou;
 import piouter.entity.User;
+import piouter.exception.PiouTooLongException;
 import piouter.exception.UserNotFoundException;
 import piouter.repository.PiouRepository;
 import piouter.repository.UserRepository;
@@ -52,7 +53,10 @@ public class PiouServiceImpl implements PiouService {
     }
 
     @Override
-    public void piouter(String userId, String message) throws UserNotFoundException {
+    public void piouter(String userId, String message) throws UserNotFoundException, PiouTooLongException {
+        if(message.length()>140){
+            throw new PiouTooLongException();
+        }
         User user = userRepository.findOne(userId);
         if(user==null){
             throw new UserNotFoundException();

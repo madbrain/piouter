@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import piouter.dto.PiouDto;
 import piouter.dto.ResponseDto;
+import piouter.exception.PiouTooLongException;
 import piouter.exception.UserNotFoundException;
 import piouter.service.PiouService;
 
@@ -31,6 +32,8 @@ public class PiouController {
             piouService.piouter(userId,piouDto.getMessage());
         } catch (UserNotFoundException e) {
             responseDto = new ResponseDto(1,"Utilisateur non existant");
+        } catch (PiouTooLongException e) {
+            responseDto = new ResponseDto(1,"Piou trop long");
         }
         return responseDto;
     }
