@@ -8,7 +8,7 @@ app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
 	var Piou = $resource('http://localhost:8080/piou/:userId', {userId:'@userId'});
 
     $scope.send = function () {
-        var params = {userId:$scope.to,message:$scope.message,date:Date.now()};
+        var params = {userId:$scope.author,message:$scope.message,date:Date.now()};
         var monPiou = new Piou(params);
         monPiou.$save(function(ret, putResponseHeaders){
             if(ret.code==0){
