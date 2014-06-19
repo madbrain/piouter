@@ -1,12 +1,7 @@
 
 var app = angular.module('app', []);
 
-//app.config(['$httpProvider', function($httpProvider) {
-//        $httpProvider.defaults.useXDomain = true;
-//        delete $httpProvider.defaults.headers.common['X-Requested-With'];
-//    }]);
-
-app.constant('userId', 'thebignet');
+app.constant('userId', 'madbrain');
 
 app.controller('TestCtrl', function ($scope, $http, $log, userId) {
     
@@ -25,7 +20,7 @@ app.controller('TestCtrl', function ($scope, $http, $log, userId) {
 		};
 		$http({
 			method: 'POST',
-			url: 'http://localhost:8080/piou/' + 'devoxxFr',
+			url: 'http://localhost:8080/piou/' + userId,
 			data: "message=" + $scope.text,
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		}).then(function (response) {
@@ -48,15 +43,32 @@ app.controller('TestCtrl', function ($scope, $http, $log, userId) {
             });
     };
 
-    $scope.fetchMatchingUsers = function () {
-		if ($scope.newFolloweeName.length >= 2) {
-			$http.get('http://localhost:8080/users/' + $scope.newFolloweeName)
+    $scope.$watch('newFolloweeName', function(newValue, oldValue) {
+		if (newValue.length >= 2) {
+			$http.get('http://localhost:8080/users/' + newValue)
 				.then(function (response) {
             		$scope.filteredUsers = response.data;
             	});
 		} else {
             $scope.filteredUsers = [];
 		}
+    });
+
+    $scope.addFollowee = function (user) {
+		$http.put('http://localhost:8080/user/' + userId + '/follow/' + user.id)
+			.then(function (response) {
+           		$scope.user = response.data;
+				$scope.newFolloweeName = '';
+				$scope.getPiouts();
+           	});
+    };
+
+    $scope.removeFollowee = function (user) {
+		$http.delete('http://localhost:8080/user/' + userId + '/follow/' + user.id)
+			.then(function (response) {
+           		$scope.user = response.data;
+				$scope.getPiouts();
+           	});
     };
 
 	$scope.getPiouts();

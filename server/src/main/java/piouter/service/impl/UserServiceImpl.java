@@ -6,6 +6,7 @@ import piouter.dto.UserDto;
 import piouter.entity.User;
 import piouter.repository.UserRepository;
 import piouter.service.UserService;
+import piouter.service.impl.monad.ResultMonad;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -29,6 +30,37 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getUsersMatching(String pattern) {
         return userRepository.findMatchingIdIgnoreCaseOrderById(makePattern(pattern)).stream()
                 .collect(Collectors.mapping(user -> getSimpleUserDto(user), Collectors.toList()));
+    }
+
+    @Override
+    @Transactional
+    public UserDto addFolloweeToUser(String id, String followId) {
+        // Oups, I think I have seen a monad...
+        UserDto userDto = ResultMonad.make(userRepository.findOne(followId))
+                .combine(follow -> ResultMonad.make(userRepository.findOne(id))
+                    .combine((User u) -> {
+                        u.addFollowing(follow);
+                        return ResultMonad.make(getUserDto(u));
+                    })).result();
+        if (userDto == null) {
+            throw new IllegalArgumentException("unknown user");
+        }
+        return userDto;
+    }
+
+    @Override
+    @Transactional
+    public UserDto removeFolloweeToUser(String id, String followId) {
+        User user = userRepository.findOne(id);
+        if (user == null) {
+            throw new IllegalArgumentException("unknown user " + id);
+        }
+        User following = userRepository.findOne(followId);
+        if (following == null) {
+            throw new IllegalArgumentException("unknown user " + followId);
+        }
+        user.removeFollowing(following);
+        return getUserDto(user);
     }
 
     @Transactional

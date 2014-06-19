@@ -10,4 +10,8 @@ public interface UserService {
     UserDto getUserWithFollowing(String id);
 
     List<UserDto> getUsersMatching(String pattern);
+
+    UserDto addFolloweeToUser(String id, String followId);
+
+    UserDto removeFolloweeToUser(String id, String followId);
 }

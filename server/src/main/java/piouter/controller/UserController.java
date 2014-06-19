@@ -20,4 +20,16 @@ public class UserController {
     public UserDto getUser(@PathVariable("id") String id){
         return userService.getUserWithFollowing(id);
     }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.PUT,value = "{id}/follow/{followId}")
+    public UserDto addFollowee(@PathVariable("id") String id, @PathVariable("followId") String followId){
+        return userService.addFolloweeToUser(id, followId);
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.DELETE,value = "{id}/follow/{followId}")
+    public UserDto removeFollowee(@PathVariable("id") String id, @PathVariable("followId") String followId){
+        return userService.removeFolloweeToUser(id, followId);
+    }
 }

@@ -8,6 +8,7 @@ import piouter.dto.ResponseDto;
 import piouter.service.PiouService;
 
 import java.util.Collection;
+import java.util.List;
 
 @Controller
 @RequestMapping("piou")
@@ -18,7 +19,7 @@ public class PiouController {
 
     @RequestMapping(method = RequestMethod.GET, value = "{userId}")
     @ResponseBody
-    public Collection<PiouDto> timeline(@PathVariable("userId") String userId){
+    public List<PiouDto> timeline(@PathVariable("userId") String userId){
         return piouService.getTimeline(userId);
     }
 

@@ -2,6 +2,7 @@ package piouter.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import piouter.dto.PiouDto;
 import piouter.dto.UserDto;
 import piouter.entity.Piou;
@@ -13,6 +14,8 @@ import piouter.service.UserService;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class PiouServiceImpl implements PiouService {
@@ -27,35 +30,43 @@ public class PiouServiceImpl implements PiouService {
     private UserRepository userRepository;
 
     @Override
-    public Collection<PiouDto> getTimeline(String id) {
-        Collection<PiouDto> piouDtos = new ArrayList<PiouDto>();
+    public List<PiouDto> getTimeline(String id) {
+        List<PiouDto> piouDtos = new ArrayList<>();
         UserDto userDto = userService.getUserWithFollowing(id);
         if (userDto != null) {
             userDto.getFollowing().forEach(u -> piouDtos.addAll(getPublished(u.getId())));
-            return piouDtos;
+            Collections.sort(piouDtos, PiouServiceImpl::comparePiouForTimeline);
         }
         return piouDtos;
     }
 
     @Override
-    public Collection<PiouDto> getPublished(String id) {
+    public List<PiouDto> getPublished(String id) {
         User user = userRepository.findOne(id);
         if(user!=null){
             Collection<Piou> pious = piouRepository.findByUser(user);
-            Collection<PiouDto> piouDtos = new ArrayList<PiouDto>(pious.size());
+            List<PiouDto> piouDtos = new ArrayList<>(pious.size());
             pious.forEach(p -> piouDtos.add(getPiouDto(p)));
+            Collections.sort(piouDtos, PiouServiceImpl::comparePiouForTimeline);
             return piouDtos;
         } else {
-            return new ArrayList<PiouDto>(0);
+            return Collections.emptyList();
         }
     }
 
+    private static int comparePiouForTimeline(PiouDto a, PiouDto b) {
+        return b.getDate().compareTo(a.getDate());
+    }
+
     @Override
+    @Transactional
     public void piouter(String userId, String message) {
         User user = userRepository.findOne(userId);
-        if(user!=null){
-            piouRepository.save(new Piou(user,message));
+        if(user==null) {
+            user = new User(userId);
+            userRepository.save(user);
         }
+        piouRepository.save(new Piou(user,message));
     }
 
     private PiouDto getPiouDto(Piou piou){

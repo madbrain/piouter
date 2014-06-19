@@ -63,16 +63,19 @@
 							<ul>
 								<li ng-repeat="followee in user.following">
 									{{followee.id}}
-									<button type="button" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></button>
+									<button type="button" class="btn btn-xs btn-default"
+											ng-click="removeFollowee(followee)">
+										<span class="glyphicon glyphicon-remove"></span></button>
 								</li>
 							</ul>
 
-							<input type="text" class="form-control"
-									ng-keypress="fetchMatchingUsers()" ng-model="newFolloweeName">
+							<input type="text" class="form-control" ng-model="newFolloweeName">
 							<ul class="list-group">
 								<li class="list-group-item" ng-repeat="user in filteredUsers">
       								<span ng-bind="user.id"></span>
-									<button type="button" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-plus"></span></button>
+									<button type="button" class="btn btn-xs btn-default"
+											ng-click="addFollowee(user)">
+										<span class="glyphicon glyphicon-plus"></span></button>
 								</li>
 							</ul>
 						</div>

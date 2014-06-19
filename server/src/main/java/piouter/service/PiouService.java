@@ -10,9 +10,10 @@ import piouter.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public interface PiouService {
-    Collection<PiouDto> getTimeline(String id);
-    Collection<PiouDto> getPublished(String id);
+    List<PiouDto> getTimeline(String id);
+    List<PiouDto> getPublished(String id);
     void piouter(String userId, String message);
 }
