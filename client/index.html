@@ -91,7 +91,8 @@
 				<ul class="list-group">
 					<li class="list-group-item" ng-repeat="piou in pious">
       					<h2><span ng-bind="piou.userId"></span></h2>
-      					<p><span ng-bind="piou.message"></span></p>
+                        <p><img ng-src="http://www.gravatar.com/avatar/{{piou.userId | gravatar}}"/></p>
+                        <p><span ng-bind="piou.message"></span></p>
 					</li>
 				</ul>
 			</div>
@@ -109,6 +110,7 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+    <script src="bower_components/angular-md5/angular-md5.min.js"></script>
     <script src="js/piouter.js"></script>
   </body>
 </html>

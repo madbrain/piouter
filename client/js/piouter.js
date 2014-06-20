@@ -1,5 +1,5 @@
 
-var app = angular.module('app', ['ngResource']);
+var app = angular.module('app', ['ngResource','angular-md5']);
 app.constant('userId', 'thebignet');
 
 app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
