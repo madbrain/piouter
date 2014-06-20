@@ -21,9 +21,14 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Override
     @Transactional
     public UserDto getUserWithFollowing(String id){
-        return getUserDto(userRepository.findOne(id));
+        User user = userRepository.findOne(id);
+        if (user == null) {
+            userRepository.save(user = new User(id));
+        }
+        return getUserDto(user);
     }
 
     @Override

@@ -61,6 +61,7 @@ public class PiouServiceImpl implements PiouService {
     }
 
     @Override
+    @Transactional
     public void piouter(String userId, String message) throws UserNotFoundException, PiouTooLongException {
         if(message.length()>140){
             throw new PiouTooLongException();
@@ -68,8 +69,6 @@ public class PiouServiceImpl implements PiouService {
         User user = userRepository.findOne(userId);
         if(user==null){
             throw new UserNotFoundException();
-            //user = new User(userId);
-            //userRepository.save(user);
         }
         piouRepository.save(new Piou(user,message));
     }

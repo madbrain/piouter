@@ -1,20 +1,21 @@
 var app = angular.module('app', ['ngResource']);
-app.constant('userId', 'madbrain');
 
-app.controller('TestCtrl', function ($scope, $resource, $log, $http, userId) {
+app.constant('apiRoot', 'http://localhost:8080');
+
+app.controller('TestCtrl', function ($scope, $resource, $log, $http, apiRoot) {
     
-	$scope.text = 'Test text';
 	$scope.user = {
-		id: userId,
+		id: null,
 		following: [],
 	};
 	$scope.filteredUsers = [ ];
 	$scope.newFolloweeName = '';
+	$scope.pious = [];
 
-	var Piou = $resource('http://localhost:8080/piou/:userId', {userId:'@userId'});
+	var Piou = $resource(apiRoot + '/piou/:userId', {userId:'@userId'});
 
     $scope.send = function () {
-        var params = {userId:$scope.author,message:$scope.message,date:Date.now()};
+        var params = {userId:$scope.user.id,message:$scope.message,date:Date.now()};
         var monPiou = new Piou(params);
         monPiou.$save(function(ret, putResponseHeaders){
             if(ret.code==0){
@@ -25,18 +26,27 @@ app.controller('TestCtrl', function ($scope, $resource, $log, $http, userId) {
         });
     };
 
-    $scope.pious = Piou.query({userId:userId});
+	function getPiouts() {
+    	$scope.pious = Piou.query({userId: $scope.user.id});
+	}
 
-    $scope.getFollowees = function () {
-        $http.get('http://localhost:8080/user/' + userId)
+	$scope.doLogin = function() {
+		$log.info("burp");
+		$http.get(apiRoot + '/user/' + $scope.login)
 			.then(function (response) {
-            	$scope.user = response.data;
-            });
-    };
+				$scope.user = response.data;
+				getPiouts();
+           	});
+	};
+
+	$scope.doLogout = function() {
+		$scope.user = {id: null, following: []};
+		$scope.pious = [];
+	};
 
     $scope.$watch('newFolloweeName', function(newValue, oldValue) {
 		if (newValue.length >= 2) {
-			$http.get('http://localhost:8080/users/' + newValue)
+			$http.get(apiRoot + '/users/' + newValue)
 				.then(function (response) {
             		$scope.filteredUsers = response.data;
             	});
@@ -46,19 +56,19 @@ app.controller('TestCtrl', function ($scope, $resource, $log, $http, userId) {
     });
 
     $scope.addFollowee = function (user) {
-		$http.put('http://localhost:8080/user/' + userId + '/follow/' + user.id)
+		$http.put(apiRoot + '/user/' + $scope.user.id + '/follow/' + user.id)
 			.then(function (response) {
            		$scope.user = response.data;
 				$scope.newFolloweeName = '';
-				$scope.getPiouts();
+				getPiouts();
            	});
     };
 
     $scope.removeFollowee = function (user) {
-		$http.delete('http://localhost:8080/user/' + userId + '/follow/' + user.id)
+		$http.delete(apiRoot + '/user/' + $scope.user.id + '/follow/' + user.id)
 			.then(function (response) {
            		$scope.user = response.data;
-				$scope.getPiouts();
+				getPiouts();
            	});
     };
 
