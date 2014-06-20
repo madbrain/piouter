@@ -27,14 +27,14 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.PUT,value = "{userId:.+}/follow/{followId}")
-    public ResponseDto addFollowee(@PathVariable("userId") String id, @PathVariable("followId") String followId){
-        return userService.addFolloweeToUser(id, followId);
+    public ResponseDto addFollowing(@PathVariable("userId") String id, @PathVariable("followId") String followId){
+        return userService.addFollowingToUser(id, followId);
     }
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.DELETE,value = "{userId:.+}/follow/{followId}")
-    public UserDto removeFollowee(@PathVariable("userId:.+") String id, @PathVariable("followId") String followId){
-        return userService.removeFolloweeToUser(id, followId);
+    public ResponseDto removeFollowee(@PathVariable("userId") String id, @PathVariable("followId") String followId){
+        return userService.removeFollowingToUser(id, followId);
     }
 
     @ResponseBody

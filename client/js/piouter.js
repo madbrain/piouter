@@ -11,7 +11,8 @@ app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
 
 	var User = $resource('http://localhost:8080/user/:userId/:action/:actionId', {userId:'@userId',action:'@action',actionId:'@actionId'},{
         matching: {method:'GET',params:{action:'filter'},isArray:true},
-        follow: {method:'PUT',params:{action:'follow'}}
+        follow: {method:'PUT',params:{action:'follow'}},
+        unfollow: {method:'DELETE',params:{action:'follow'}}
     });
     $scope.user = User.get({userId:userId});
 
@@ -38,7 +39,13 @@ app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
     };
 
     $scope.follow = function(userToFollow){
-        User.follow({userId:userId,actionId:userToFollow.id});
+        User.follow({userId:userId,actionId:userToFollow.id},function(){
+            $scope.user.following.push(userToFollow);
+        });
+    };
+
+    $scope.unfollow = function(userToUnfollow){
+        User.unfollow({userId:userId,actionId:userToUnfollow.id});
     };
 
 });

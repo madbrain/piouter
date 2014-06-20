@@ -7,7 +7,6 @@ import piouter.dto.UserDto;
 import piouter.entity.User;
 import piouter.repository.UserRepository;
 import piouter.service.UserService;
-import piouter.service.impl.monad.ResultMonad;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -18,6 +17,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private static final ResponseDto RESPONSE_OK = new ResponseDto(0,"");
+
     @Autowired
     private UserRepository userRepository;
 
@@ -30,10 +31,10 @@ public class UserServiceImpl implements UserService {
     public ResponseDto create(String id) {
         ResponseDto responseDto;
         if (userRepository.exists(id)) {
-            responseDto = new ResponseDto(1, "Utilisateur existant");
+            responseDto = new ResponseDto(1, "User already exists");
         } else {
             userRepository.save(new User(id));
-            responseDto = new ResponseDto(0, "");
+            responseDto = RESPONSE_OK;
         }
         return responseDto;
     }
@@ -46,32 +47,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ResponseDto addFolloweeToUser(String id, String followId) {
-        ResponseDto responseDto = new ResponseDto(0,"");
+    public ResponseDto addFollowingToUser(String id, String followId) {
+        ResponseDto responseDto = RESPONSE_OK;
         User user = userRepository.findOne(id);
-        User follower= userRepository.findOne(followId);
-        if(user==null || follower==null){
+        User following= userRepository.findOne(followId);
+        if(user==null || following==null){
             responseDto = new ResponseDto(1,"Unknown user");
         } else {
-            follower.addFollowing(user);
-            userRepository.save(follower);
+            user.addFollowing(following);
+            userRepository.save(user);
         }
         return responseDto;
     }
 
     @Override
     @Transactional
-    public UserDto removeFolloweeToUser(String id, String followId) {
+    public ResponseDto removeFollowingToUser(String id, String followId) {
+        ResponseDto responseDto = RESPONSE_OK;
         User user = userRepository.findOne(id);
         if (user == null) {
-            throw new IllegalArgumentException("unknown user " + id);
+            responseDto = new ResponseDto(1,"User unknown : "+id);
+        } else {
+            User following = userRepository.findOne(followId);
+            if (following == null) {
+                responseDto = new ResponseDto(1,"User unknown : "+followId);
+            } else {
+                user.removeFollowing(following);
+            }
         }
-        User following = userRepository.findOne(followId);
-        if (following == null) {
-            throw new IllegalArgumentException("unknown user " + followId);
-        }
-        user.removeFollowing(following);
-        return getUserDto(user);
+        return responseDto;
     }
 
     @Transactional
