@@ -1,7 +1,6 @@
 package piouter.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import piouter.dto.PiouDto;
 import piouter.dto.ResponseDto;
@@ -10,6 +9,7 @@ import piouter.exception.UserNotFoundException;
 import piouter.service.PiouService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("piou")

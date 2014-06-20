@@ -27,6 +27,10 @@ public class User {
         this.following.add(following);
     }
 
+    public void removeFollowing(User following) {
+        this.following.remove(following);
+    }
+
     public String getId() {
         return id;
     }
@@ -41,4 +45,5 @@ public class User {
                 "id=" + id +
                 '}';
     }
+
 }

@@ -26,6 +26,10 @@ public class DatabaseInitializer {
         thebignet.addFollowing(devoxxFr);
         userRepository.save(thebignet);
 
+        User machin = new User("machin@gmail.com");
+        machin.addFollowing(thebignet);
+        userRepository.save(machin);
+
         piouRepository.save(new Piou(thebignet,"Ceci est mon premier piou"));
         piouRepository.save(new Piou(thebignet,"Ceci est mon deuxieme piou"));
         piouRepository.save(new Piou(devoxxFr,"Bienvenue à DevoxxFR"));

@@ -2,6 +2,7 @@ package piouter.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import piouter.dto.PiouDto;
 import piouter.dto.UserDto;
 import piouter.entity.Piou;
@@ -16,7 +17,6 @@ import piouter.service.UserService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.stream.Stream;
 
 @Service
 public class PiouServiceImpl implements PiouService {
@@ -32,7 +32,7 @@ public class PiouServiceImpl implements PiouService {
 
     @Override
     public Collection<PiouDto> getTimeline(String id) {
-        Collection<PiouDto> piouDtos = new ArrayList<PiouDto>();
+        Collection<PiouDto> piouDtos = new ArrayList<>();
         UserDto userDto = userService.getUserWithFollowing(id);
         if (userDto != null) {
             Collection<UserDto> following = userDto.getFollowing();
@@ -49,15 +49,20 @@ public class PiouServiceImpl implements PiouService {
         User user = userRepository.findOne(id);
         if(user!=null){
             Collection<Piou> pious = piouRepository.findByUser(user);
-            Collection<PiouDto> piouDtos = new ArrayList<PiouDto>(pious.size());
+            Collection<PiouDto> piouDtos = new ArrayList<>(pious.size());
             pious.forEach(p -> piouDtos.add(getPiouDto(p)));
             return piouDtos;
         } else {
-            return new ArrayList<PiouDto>(0);
+            return Collections.emptyList();
         }
     }
 
+    private static int comparePiouForTimeline(PiouDto a, PiouDto b) {
+        return b.getDate().compareTo(a.getDate());
+    }
+
     @Override
+    @Transactional
     public void piouter(String userId, String message) throws UserNotFoundException, PiouTooLongException {
         if(message.length()>140){
             throw new PiouTooLongException();
