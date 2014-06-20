@@ -15,6 +15,8 @@ import piouter.service.UserService;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Stream;
 
 @Service
 public class PiouServiceImpl implements PiouService {
@@ -33,8 +35,11 @@ public class PiouServiceImpl implements PiouService {
         Collection<PiouDto> piouDtos = new ArrayList<PiouDto>();
         UserDto userDto = userService.getUserWithFollowing(id);
         if (userDto != null) {
-            userDto.getFollowing().forEach(u -> piouDtos.addAll(getPublished(u.getId())));
-            return piouDtos;
+            Collection<UserDto> following = userDto.getFollowing();
+            Collection<UserDto> usersInTimeline = new ArrayList<UserDto>(following.size()+1);
+            usersInTimeline.addAll(following);
+            usersInTimeline.add(userDto);
+            usersInTimeline.forEach(u -> piouDtos.addAll(getPublished(u.getId())));
         }
         return piouDtos;
     }
