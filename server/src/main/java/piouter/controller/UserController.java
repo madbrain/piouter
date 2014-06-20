@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.PUT,value = "{userId:.+}/follow/{followId}")
-    public UserDto addFollowee(@PathVariable("userId") String id, @PathVariable("followId") String followId){
+    public ResponseDto addFollowee(@PathVariable("userId") String id, @PathVariable("followId") String followId){
         return userService.addFolloweeToUser(id, followId);
     }
 
@@ -38,8 +38,8 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.GET, value = "{userId:.+}/find/{pattern}")
-    public List<UserDto> findUser(@PathVariable("pattern") String pattern){
+    @RequestMapping(method = RequestMethod.GET, value = "{userId:.+}/filter/{pattern}")
+    public List<UserDto> filterUsers(@PathVariable("pattern") String pattern){
         return userService.getUsersMatching(pattern);
     }
 }

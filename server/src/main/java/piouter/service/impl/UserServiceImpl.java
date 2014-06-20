@@ -46,7 +46,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto addFolloweeToUser(String id, String followId) {
+    public ResponseDto addFolloweeToUser(String id, String followId) {
+        ResponseDto responseDto = new ResponseDto(0,"");
         // Oups, I think I have seen a monad...
         UserDto userDto = ResultMonad.make(userRepository.findOne(followId))
                 .combine(follow -> ResultMonad.make(userRepository.findOne(id))
@@ -55,9 +56,9 @@ public class UserServiceImpl implements UserService {
                         return ResultMonad.make(getUserDto(u));
                     })).result();
         if (userDto == null) {
-            throw new IllegalArgumentException("unknown user");
+            responseDto = new ResponseDto(1,"Unknown user");
         }
-        return userDto;
+        return responseDto;
     }
 
     @Override
@@ -79,7 +80,7 @@ public class UserServiceImpl implements UserService {
     public Collection<UserDto> getFollowers(String id){
         Collection<User> followers = userRepository.followers(id);
         Collection<UserDto> followersDto = new ArrayList<>(followers.size());
-        followers.forEach(f -> followersDto.add(new UserDto(f.getId(),Collections.EMPTY_LIST)));
+        followers.forEach(f -> followersDto.add(new UserDto(f.getId(), Collections.EMPTY_LIST)));
         return followersDto;
     }
 

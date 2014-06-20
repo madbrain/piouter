@@ -1,5 +1,5 @@
 
-var app = angular.module('app', ['ngResource','angular-md5']);
+var app = angular.module('app', ['ngResource','angular-md5','ui.bootstrap']);
 app.constant('userId', 'thebignet@gmail.com');
 
 app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
@@ -9,7 +9,10 @@ app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
 	var Piou = $resource('http://localhost:8080/piou/:userId', {userId:'@userId'});
     $scope.pious = Piou.query({userId:userId});
 
-	var User = $resource('http://localhost:8080/user/:userId', {userId:'@userId'});
+	var User = $resource('http://localhost:8080/user/:userId/:action/:actionId', {userId:'@userId',action:'@action',actionId:'@actionId'},{
+        matching: {method:'GET',params:{action:'filter'},isArray:true},
+        follow: {method:'PUT',params:{action:'follow'}}
+    });
     $scope.user = User.get({userId:userId});
 
 	var Follower = $resource('http://localhost:8080/follower/:userId', {userId:'@userId'});
@@ -25,6 +28,20 @@ app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
                 alert(ret.message);
             }
         });
+    };
+
+    $scope.getUsersMatching = function(val){
+        return User.matching({userId:userId,actionId:val}).$promise.then(function(res){
+            var users = [];
+                angular.forEach(res, function(user){
+                users.push(user.id);
+            });
+            return users;
+        });
+    };
+
+    $scope.follow = function(userToFollow){
+        User.follow({userId:userId,actionId:userToFollow});
     };
 
 });
