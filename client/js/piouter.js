@@ -1,6 +1,6 @@
 
 var app = angular.module('app', ['ngResource','angular-md5']);
-app.constant('userId', 'thebignet');
+app.constant('userId', 'thebignet@gmail.com');
 
 app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
     

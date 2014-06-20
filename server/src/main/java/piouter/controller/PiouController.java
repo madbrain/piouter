@@ -18,13 +18,13 @@ public class PiouController {
     @Autowired
     private PiouService piouService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "{userId}")
+    @RequestMapping(method = RequestMethod.GET, value = "{userId:.+}")
     @ResponseBody
     public Collection<PiouDto> timeline(@PathVariable("userId") String userId){
         return piouService.getTimeline(userId);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "{userId}")
+    @RequestMapping(method = RequestMethod.POST, value = "{userId:.+}")
     @ResponseBody
     public ResponseDto piouter(@PathVariable("userId") String userId, @RequestBody PiouDto piouDto){
         ResponseDto responseDto = new ResponseDto(0,"");
