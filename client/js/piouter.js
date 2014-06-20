@@ -4,7 +4,7 @@ app.constant('userId', 'thebignet');
 
 app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
     
-	$scope.text = 'Test text';
+	$scope.message = '';
 	var Piou = $resource('http://localhost:8080/piou/:userId', {userId:'@userId'});
 
     $scope.send = function () {

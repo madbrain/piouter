@@ -61,10 +61,10 @@
                         <input type="text" class="form-control" id="message" placeholder="Message" ng-model="message">
                     </div>
                     <div class="form-group">
-                        <span ng-bind="message.length"></span>
                         <button type="button" class="btn btn-default btn-lg" ng-click="send()">
                             <span class="glyphicon glyphicon glyphicon-pencil"></span>&nbsp;Send
                         </button>
+                        (<span ng-bind="message.length" ng-class="{'too-long': message.length > 140}"></span>&nbsp;caracters)
                     </div>
                 </div><!-- /input-group -->
 				<div class="panel panel-default" >
