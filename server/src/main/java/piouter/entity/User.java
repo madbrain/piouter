@@ -3,9 +3,7 @@ package piouter.entity;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 @Entity
 public class User {
@@ -14,13 +12,13 @@ public class User {
     private String id;
 
     @ElementCollection
-    private Collection<User> following;
+    private Set<User> following;
 
     protected User(){}
 
     public User(String id) {
         this.id = id;
-        this.following = new ArrayList<User>();
+        this.following = new HashSet<>();
     }
 
     public void addFollowing(User following){
