@@ -39,7 +39,7 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "{userId:.+}/filter/{pattern}")
-    public List<UserDto> filterUsers(@PathVariable("pattern") String pattern){
-        return userService.getUsersMatching(pattern);
+    public List<UserDto> filterUsers(@PathVariable("userId") String userId,@PathVariable("pattern") String pattern){
+        return userService.getUsersMatching(userId,pattern);
     }
 }

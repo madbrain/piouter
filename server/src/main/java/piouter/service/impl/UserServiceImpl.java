@@ -39,8 +39,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public List<UserDto> getUsersMatching(String pattern) {
-        return userRepository.findMatchingIdIgnoreCaseOrderById(makePattern(pattern)).stream()
+    public List<UserDto> getUsersMatching(String userId, String pattern) {
+        return userRepository.findMatchingIdIgnoreCaseOrderById(makePattern(pattern)).stream().filter(u -> !u.getId().equals(userId))
                 .collect(Collectors.mapping(user -> getSimpleUserDto(user), Collectors.toList()));
     }
 
@@ -48,15 +48,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseDto addFolloweeToUser(String id, String followId) {
         ResponseDto responseDto = new ResponseDto(0,"");
-        // Oups, I think I have seen a monad...
-        UserDto userDto = ResultMonad.make(userRepository.findOne(followId))
-                .combine(follow -> ResultMonad.make(userRepository.findOne(id))
-                    .combine((User u) -> {
-                        u.addFollowing(follow);
-                        return ResultMonad.make(getUserDto(u));
-                    })).result();
-        if (userDto == null) {
+        User user = userRepository.findOne(id);
+        User follower= userRepository.findOne(followId);
+        if(user==null || follower==null){
             responseDto = new ResponseDto(1,"Unknown user");
+        } else {
+            follower.addFollowing(user);
+            userRepository.save(follower);
         }
         return responseDto;
     }
