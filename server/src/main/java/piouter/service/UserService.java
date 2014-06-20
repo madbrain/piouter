@@ -1,5 +1,6 @@
 package piouter.service;
 
+import piouter.dto.ResponseDto;
 import piouter.dto.UserDto;
 import piouter.entity.User;
 
@@ -14,4 +15,7 @@ public interface UserService {
     UserDto addFolloweeToUser(String id, String followId);
 
     UserDto removeFolloweeToUser(String id, String followId);
+
+    ResponseDto create(String id);
+
 }

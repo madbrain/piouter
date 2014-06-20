@@ -2,6 +2,7 @@ package piouter.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import piouter.dto.ResponseDto;
 import piouter.dto.UserDto;
 import piouter.entity.User;
 import piouter.repository.UserRepository;
@@ -66,6 +67,17 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Collection<User> getFollowers(String id){
         return userRepository.findOne(id).getFollowing();
+	}
+
+    public ResponseDto create(String id) {
+        ResponseDto responseDto;
+        if(userRepository.exists(id)){
+            responseDto = new ResponseDto(1,"Utilisateur existant");
+        } else {
+            userRepository.save(new User(id));
+            responseDto = new ResponseDto(0,"");
+        }
+        return responseDto;
     }
 
     private UserDto getUserDto(User user){

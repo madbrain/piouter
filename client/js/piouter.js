@@ -1,12 +1,9 @@
-
-var app = angular.module('app', []);
-
+var app = angular.module('app', ['ngResource']);
 app.constant('userId', 'madbrain');
 
-app.controller('TestCtrl', function ($scope, $http, $log, userId) {
+app.controller('TestCtrl', function ($scope, $resource, $log, $http, userId) {
     
 	$scope.text = 'Test text';
-	$scope.piouts = [];
 	$scope.user = {
 		id: userId,
 		following: [],
@@ -14,27 +11,21 @@ app.controller('TestCtrl', function ($scope, $http, $log, userId) {
 	$scope.filteredUsers = [ ];
 	$scope.newFolloweeName = '';
 
+	var Piou = $resource('http://localhost:8080/piou/:userId', {userId:'@userId'});
+
     $scope.send = function () {
-		var data = {
-			'message': $scope.text,
-		};
-		$http({
-			method: 'POST',
-			url: 'http://localhost:8080/piou/' + userId,
-			data: "message=" + $scope.text,
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		}).then(function (response) {
-			$log.info(response.data);
-			$scope.getPiouts();
-		});
+        var params = {userId:$scope.author,message:$scope.message,date:Date.now()};
+        var monPiou = new Piou(params);
+        monPiou.$save(function(ret, putResponseHeaders){
+            if(ret.code==0){
+                $scope.pious.push(params);
+            } else {
+                alert(ret.message);
+            }
+        });
     };
 
-    $scope.getPiouts = function () {
-        $http.get('http://localhost:8080/piou/' + userId)
-			.then(function (response) {
-            	$scope.piouts = response.data;
-            });
-    };
+    $scope.pious = Piou.query({userId:userId});
 
     $scope.getFollowees = function () {
         $http.get('http://localhost:8080/user/' + userId)
@@ -71,7 +62,5 @@ app.controller('TestCtrl', function ($scope, $http, $log, userId) {
            	});
     };
 
-	$scope.getPiouts();
-	$scope.getFollowees();
 });
 

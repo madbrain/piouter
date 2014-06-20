@@ -1,17 +1,24 @@
 package piouter.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PiouDto implements Serializable {
-    private final String userId;
-    private final String message;
-    private final Date date;
+    private String userId;
+    private String message;
+    private Date date;
 
     public PiouDto(String userId, String message, Date date) {
         this.userId = userId;
         this.message = message;
         this.date = date;
+    }
+
+    public PiouDto(){
     }
 
     public String getUserId() {
@@ -24,6 +31,18 @@ public class PiouDto implements Serializable {
 
     public Date getDate() {
         return date;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     @Override

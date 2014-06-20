@@ -11,7 +11,7 @@
     <title>Starter Template for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="css/piouter.css" rel="stylesheet">
@@ -38,9 +38,7 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li class="active"><a href="#">Timeline</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -53,6 +51,22 @@
 		<div class="row">
 
 			<div class="col-md-3">
+                <div class="input-group well">
+                    <div class="form-group">
+                        <label for="author">Author</label>
+                        <input type="text" class="form-control" id="author" placeholder="Author" ng-model="author">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <input type="text" class="form-control" id="message" placeholder="Message" ng-model="message">
+                    </div>
+                    <div class="form-group">
+                        <span ng-bind="message.length"></span>
+                        <button type="button" class="btn btn-default btn-lg" ng-click="send()">
+                            <span class="glyphicon glyphicon glyphicon-pencil"></span>&nbsp;Send
+                        </button>
+                    </div>
+                </div><!-- /input-group -->
 				<div class="panel panel-default" >
 					<div class="panel-heading">
 						<h3 class="panel-title">Followees</h3>
@@ -84,17 +98,10 @@
 			</div>
 
 			<div class="col-md-9">
-				<div class="input-group">
-					<input type="text" class="form-control" ng-model="text">
-					<span class="input-group-btn">
-						<button class="btn btn-default" type="button" ng-click="send()">Envoyer</button>
-					</span>
-				</div><!-- /input-group -->
-
 				<ul class="list-group">
-					<li class="list-group-item" ng-repeat="piout in piouts">
-      					<h2><span ng-bind="piout.userId"></span></h2>
-      					<p><span ng-bind="piout.message"></span></p>
+					<li class="list-group-item" ng-repeat="piou in pious">
+      					<h2><span ng-bind="piou.userId"></span></h2>
+      					<p><span ng-bind="piou.message"></span></p>
 					</li>
 				</ul>
 			</div>
@@ -108,9 +115,10 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/angular.min.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
     <script src="js/piouter.js"></script>
   </body>
 </html>

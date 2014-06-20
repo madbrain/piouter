@@ -2,14 +2,12 @@ package piouter.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import piouter.dto.ResponseDto;
 import piouter.dto.UserDto;
 import piouter.service.UserService;
 
-@Controller
+@RestController
 @RequestMapping("user")
 public class UserController {
     @Autowired
@@ -31,5 +29,11 @@ public class UserController {
     @RequestMapping(method = RequestMethod.DELETE,value = "{id}/follow/{followId}")
     public UserDto removeFollowee(@PathVariable("id") String id, @PathVariable("followId") String followId){
         return userService.removeFolloweeToUser(id, followId);
+	}
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.PUT,value = "{id}")
+    public ResponseDto create(@PathVariable("id") String id){
+        return userService.create(id);
     }
 }
