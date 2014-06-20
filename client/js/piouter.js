@@ -32,16 +32,13 @@ app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
 
     $scope.getUsersMatching = function(val){
         return User.matching({userId:userId,actionId:val}).$promise.then(function(res){
-            var users = [];
-                angular.forEach(res, function(user){
-                users.push(user.id);
-            });
-            return users;
+            $log.info(res);
+            return res;
         });
     };
 
     $scope.follow = function(userToFollow){
-        User.follow({userId:userId,actionId:userToFollow});
+        User.follow({userId:userId,actionId:userToFollow.id});
     };
 
 });
