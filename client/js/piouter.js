@@ -34,6 +34,7 @@ app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
         monPiou.$save(function(ret, putResponseHeaders){
             if(ret.code==0){
                 $scope.pious.push(params);
+                $scope.message='';
             } else {
                 alert(ret.message);
             }
