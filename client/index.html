@@ -85,12 +85,13 @@
                     </div>
                     <div class="panel-body">
                         <div ng-hide="user.following.length == 0">
-                            <ul>
-                                <li ng-repeat="user in user.following">
-                                    {{user.id}}
-                                    <button type="button" class="btn btn-xs btn-default"
-                                            ng-click="unfollow(user)">
-                                        <span class="glyphicon glyphicon-remove"></span></button>
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="user in user.following | orderBy:'id'">
+                                    <span class="badge" ng-click="unfollow(user)"><span class="glyphicon glyphicon-remove"></span></span>
+                                    <span>
+                                        <img width="25px" ng-src="http://www.gravatar.com/avatar/{{user.id | gravatar}}"/>
+                                        {{user.id}}
+                                    </span>
                                 </li>
                             </ul>
                         </div>
