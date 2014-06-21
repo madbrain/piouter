@@ -1,5 +1,5 @@
 
-var app = angular.module('app', ['ngResource','angular-md5','ui.bootstrap']);
+var app = angular.module('app', ['ngResource','angular-md5','ui.bootstrap','angularMoment']);
 app.constant('userId', 'thebignet@gmail.com');
 
 app.controller('TestCtrl', function ($scope, $resource, $log, userId) {
