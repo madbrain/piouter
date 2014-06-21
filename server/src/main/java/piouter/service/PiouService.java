@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface PiouService {
-    List<PiouDto> getTimeline(String id);
-    List<PiouDto> getPublished(String id);
+    Collection<PiouDto> getTimeline(String id);
+    Collection<PiouDto> getPublished(String id);
     void piouter(String userId, String message) throws UserNotFoundException, PiouTooLongException;
 }

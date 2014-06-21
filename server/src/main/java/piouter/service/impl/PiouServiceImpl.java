@@ -32,7 +32,7 @@ public class PiouServiceImpl implements PiouService {
     private UserRepository userRepository;
 
     @Override
-    public List<PiouDto> getTimeline(String id) {
+    public Collection<PiouDto> getTimeline(String id) {
         List<PiouDto> piouDtos = new ArrayList<>();
         UserDto userDto = userService.getUserWithFollowing(id);
         if (userDto != null) {
@@ -42,26 +42,20 @@ public class PiouServiceImpl implements PiouService {
             usersInTimeline.add(userDto);
             usersInTimeline.forEach(u -> piouDtos.addAll(getPublished(u.getId())));
         }
-        Collections.sort(piouDtos, PiouServiceImpl::comparePiouForTimeline);
         return piouDtos;
     }
 
     @Override
-    public List<PiouDto> getPublished(String id) {
+    public Collection<PiouDto> getPublished(String id) {
         User user = userRepository.findOne(id);
         if(user!=null){
             Collection<Piou> pious = piouRepository.findByUser(user);
             List<PiouDto> piouDtos = new ArrayList<>(pious.size());
             pious.forEach(p -> piouDtos.add(getPiouDto(p)));
-            Collections.sort(piouDtos, PiouServiceImpl::comparePiouForTimeline);
             return piouDtos;
         } else {
             return Collections.emptyList();
         }
-    }
-
-    private static int comparePiouForTimeline(PiouDto a, PiouDto b) {
-        return b.getDate().compareTo(a.getDate());
     }
 
     @Override
