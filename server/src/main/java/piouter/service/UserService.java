@@ -13,5 +13,4 @@ public interface UserService {
     ResponseDto addFollowingToUser(String id, String followId);
     ResponseDto removeFollowingToUser(String id, String followId);
     Collection<UserDto> getFollowers(String id);
-
 }

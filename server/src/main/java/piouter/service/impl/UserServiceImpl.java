@@ -83,7 +83,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-
     public Collection<UserDto> getFollowers(String id){
         Collection<User> followers = userRepository.followers(id);
         Collection<UserDto> followersDto = new ArrayList<>(followers.size());
