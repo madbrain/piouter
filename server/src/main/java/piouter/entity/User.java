@@ -1,8 +1,6 @@
 package piouter.entity;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.*;
 
 @Entity
@@ -11,7 +9,7 @@ public class User {
     @Id
     private String id;
 
-    @ElementCollection
+    @ManyToMany
     private Set<User> following;
 
     protected User(){}

@@ -60,7 +60,6 @@ public class UserServiceImpl implements UserService {
             responseDto = new ResponseDto(1,"Unknown user");
         } else {
             user.addFollowing(following);
-            userRepository.save(user);
         }
         return responseDto;
     }

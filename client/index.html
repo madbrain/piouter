@@ -52,39 +52,58 @@
 
 			<div class="col-md-3">
                 <div class="input-group well">
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <input type="text" class="form-control" id="message" placeholder="Message" ng-model="message">
+					<form ng-submit="createUser()">
+                    <div class="media">
+                        <a class="pull-left" href="#">
+                            <img width="50px" class="media-object" ng-src="http://www.gravatar.com/avatar/{{user.id | gravatar}}"/>
+                        </a>
+                        <div class="media-body">
+                            <p><strong ng-bind="user.id"></strong></p>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <button type="button" class="btn btn-default btn-lg" ng-click="send()">
-                            <span class="glyphicon glyphicon glyphicon-pencil"></span>&nbsp;Send
-                        </button>
-                        (<span ng-bind="message.length" ng-class="{'too-long': message.length > 140}"></span>&nbsp;caracters)
+                        <label for="newUser">Select other user</label>
+                        <input type="text" id="newUser" ng-model="newUser" placeholder="Utilisateur" typeahead="user as user.id for user in getUsersMatching($viewValue)" typeahead-loading="loadingUsers" typeahead-min-length="2" typeahead-on-select="changeUser($item, $model, $label)" class="form-control">
+                                <i ng-show="loadingUsers" class="glyphicon glyphicon-refresh"></i>
                     </div>
-                </div><!-- /input-group -->
+					</form>
+                </div>
+                <div class="input-group well">
+                    <form>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <input type="text" class="form-control" id="message" placeholder="Message" ng-model="message">
+                        </div>
+                        <div class="form-group" style="margin-top:50px">
+                            <button type="submit" class="btn btn-default btn-lg" ng-click="send()">
+                                <span class="glyphicon glyphicon glyphicon-pencil"></span>&nbsp;Send
+                            </button>
+                            (<span ng-bind="message.length" ng-class="{'too-long': message.length > 140}"></span>&nbsp;caracters)
+                        </div>
+                    </form>
+                </div>
                 <div class="panel panel-default" >
                     <div class="panel-heading">
                         <h3 class="panel-title">Following</h3>
                     </div>
                     <div class="panel-body">
-                        <span ng-show="user.following.length == 0">Not following anyone</span>
                         <div ng-hide="user.following.length == 0">
-                            <ul>
-                                <li ng-repeat="user in user.following">
-                                    {{user.id}}
-                                    <button type="button" class="btn btn-xs btn-default"
-                                            ng-click="unfollow(user)">
-                                        <span class="glyphicon glyphicon-remove"></span></button>
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="user in user.following | orderBy:'id'">
+                                    <span class="badge" ng-click="unfollow(user)"><span class="glyphicon glyphicon-remove"></span></span>
+                                    <span>
+                                        <img width="25px" ng-src="http://www.gravatar.com/avatar/{{user.id | gravatar}}"/>
+                                        {{user.id}}
+                                    </span>
                                 </li>
                             </ul>
 						</div>
                         <div>
-                            <input type="text" ng-model="userToFollow" placeholder="Utilisateur" typeahead="user as user.id for user in getUsersMatching($viewValue)" typeahead-loading="loadingLocations" typeahead-min-length="2" class="form-control">
-                            <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
-                            <button type="button" class="btn btn-xs btn-default"
-                                    ng-click="follow(userToFollow)">
-                                <span class="glyphicon glyphicon-plus"></span></button>
+                            <div class="form-group">
+                                <label for="userToFollow">Follow someone :</label>
+                                <input type="text" id="userToFollow" ng-model="userToFollow" placeholder="Utilisateur" typeahead="user as user.id for user in getUsersMatching($viewValue)" typeahead-loading="loadingLocations" typeahead-min-length="2" typeahead-on-select="follow($item, $model, $label)" class="form-control">
+                                <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -105,10 +124,16 @@
 
 			<div class="col-md-9">
 				<ul class="list-group">
-					<li class="list-group-item" ng-repeat="piou in pious">
-      					<h2><span ng-bind="piou.userId"></span></h2>
-                        <p><img ng-src="http://www.gravatar.com/avatar/{{piou.userId | gravatar}}"/></p>
-                        <p><span ng-bind="piou.message"></span></p>
+					<li class="list-group-item" ng-repeat="piou in pious | orderBy:'date':true">
+                        <div class="media">
+                            <a class="pull-left" href="#">
+                                <img class="media-object" ng-src="http://www.gravatar.com/avatar/{{piou.userId | gravatar}}"/>
+                            </a>
+                            <div class="media-body">
+                                <p><strong ng-bind="piou.userId"></strong> - <span am-time-ago="piou.date"></span></p>
+                                <p><span ng-bind="piou.message"></span></p>
+                            </div>
+                        </div>
 					</li>
 				</ul>
 			</div>
@@ -129,6 +154,9 @@
     <script src="bower_components/angular-md5/angular-md5.min.js"></script>
     <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap.min.js"></script>
     <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/angular-moment/angular-moment.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
     <script src="js/piouter.js"></script>
   </body>
 </html>
