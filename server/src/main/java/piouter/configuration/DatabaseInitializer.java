@@ -19,12 +19,16 @@ public class DatabaseInitializer {
 
     @Bean
     public Integer databaseInitialization(){
-        User devoxxFr = new User("devoxxFr");
+        User devoxxFr = new User("info@devoxx.fr");
         userRepository.save(devoxxFr);
 
-        User thebignet = new User("thebignet");
+        User thebignet = new User("thebignet@gmail.com");
         thebignet.addFollowing(devoxxFr);
         userRepository.save(thebignet);
+
+        User machin = new User("machin@gmail.com");
+        machin.addFollowing(thebignet);
+        userRepository.save(machin);
 
         piouRepository.save(new Piou(thebignet,"Ceci est mon premier piou"));
         piouRepository.save(new Piou(thebignet,"Ceci est mon deuxieme piou"));

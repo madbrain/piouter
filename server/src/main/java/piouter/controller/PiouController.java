@@ -1,7 +1,6 @@
 package piouter.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import piouter.dto.PiouDto;
 import piouter.dto.ResponseDto;
@@ -19,13 +18,13 @@ public class PiouController {
     @Autowired
     private PiouService piouService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "{userId}")
+    @RequestMapping(method = RequestMethod.GET, value = "{userId:.+}")
     @ResponseBody
-    public List<PiouDto> timeline(@PathVariable("userId") String userId){
+    public Collection<PiouDto> timeline(@PathVariable("userId") String userId){
         return piouService.getTimeline(userId);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "{userId}")
+    @RequestMapping(method = RequestMethod.POST, value = "{userId:.+}")
     @ResponseBody
     public ResponseDto piouter(@PathVariable("userId") String userId, @RequestBody PiouDto piouDto){
         ResponseDto responseDto = new ResponseDto(0,"");

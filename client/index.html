@@ -23,7 +23,7 @@
     <![endif]-->
   </head>
 
-  <body ng-controller="TestCtrl">
+  <body>
 
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
@@ -40,90 +40,75 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Timeline</a></li>
           </ul>
-
-          <form class="navbar-form navbar-right" role="form" ng-show="user.id == null" ng-submit="doLogin()">
-            <div class="form-group">
-              <input type="text" placeholder="Login" class="form-control" ng-model="login">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-          </form>
-
-          <form class="navbar-form navbar-right" role="form" ng-show="user.id != null">
-            <div class="form-group">
-              <a href="#" ng-bind="user.id"></a>
-            </div>
-            <button type="submit" class="btn btn-success" ng-click="doLogout()">Logout</button>
-          </form>
-
         </div><!--/.nav-collapse -->
       </div>
     </div>
 
     <div class="container">
 
-      <div class="starter-template">
+      <div class="starter-template" ng-controller="TestCtrl">
 
 		<div class="row">
 
 			<div class="col-md-3">
                 <div class="input-group well">
-<!--
-                    <div class="form-group">
-                        <label for="author">Author</label>
-                        <input type="text" class="form-control" id="author" placeholder="Author" ng-model="author">
-                    </div>
--->
                     <div class="form-group">
                         <label for="message">Message</label>
                         <input type="text" class="form-control" id="message" placeholder="Message" ng-model="message">
                     </div>
                     <div class="form-group">
-                        <span ng-bind="message.length"></span>
                         <button type="button" class="btn btn-default btn-lg" ng-click="send()">
                             <span class="glyphicon glyphicon glyphicon-pencil"></span>&nbsp;Send
                         </button>
+                        (<span ng-bind="message.length" ng-class="{'too-long': message.length > 140}"></span>&nbsp;caracters)
                     </div>
                 </div><!-- /input-group -->
-				<div class="panel panel-default" >
-					<div class="panel-heading">
-						<h3 class="panel-title">Followees</h3>
-					</div>
-					<div class="panel-body">
-						<span ng-show="user.following.length == 0">Pas de Followee.</span>
-						<div ng-hide="user.following.length == 0">
-							<ul>
-								<li ng-repeat="followee in user.following">
-									{{followee.id}}
-									<button type="button" class="btn btn-xs btn-default"
-											ng-click="removeFollowee(followee)">
-										<span class="glyphicon glyphicon-remove"></span></button>
-								</li>
-							</ul>
+                <div class="panel panel-default" >
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Following</h3>
+                    </div>
+                    <div class="panel-body">
+                        <span ng-show="user.following.length == 0">Not following anyone</span>
+                        <div ng-hide="user.following.length == 0">
+                            <ul>
+                                <li ng-repeat="user in user.following">
+                                    {{user.id}}
+                                    <button type="button" class="btn btn-xs btn-default"
+                                            ng-click="unfollow(user)">
+                                        <span class="glyphicon glyphicon-remove"></span></button>
+                                </li>
+                            </ul>
 						</div>
-
-						<div>
-							<input type="text" class="form-control" ng-model="newFolloweeName">
-							<ul class="list-group">
-								<li class="list-group-item" ng-repeat="user in filteredUsers">
-      								<span ng-bind="user.id"></span>
-									<button type="button" class="btn btn-xs btn-default"
-											ng-click="addFollowee(user)">
-										<span class="glyphicon glyphicon-plus"></span></button>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div> 
-			</div>
+                        <div>
+                            <input type="text" ng-model="userToFollow" placeholder="Utilisateur" typeahead="user as user.id for user in getUsersMatching($viewValue)" typeahead-loading="loadingLocations" typeahead-min-length="2" class="form-control">
+                            <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+                            <button type="button" class="btn btn-xs btn-default"
+                                    ng-click="follow(userToFollow)">
+                                <span class="glyphicon glyphicon-plus"></span></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default" >
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Followed by</h3>
+                    </div>
+                    <div class="panel-body">
+                        <span ng-show="followers.length == 0">No follower</span>
+                        <div ng-hide="followers.length == 0">
+                            <ul>
+                                <li ng-repeat="follower in followers" ng-bind="follower.id"/>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 			<div class="col-md-9">
 				<ul class="list-group">
 					<li class="list-group-item" ng-repeat="piou in pious">
       					<h2><span ng-bind="piou.userId"></span></h2>
-      					<p><span ng-bind="piou.message"></span></p>
+                        <p><img ng-src="http://www.gravatar.com/avatar/{{piou.userId | gravatar}}"/></p>
+                        <p><span ng-bind="piou.message"></span></p>
 					</li>
 				</ul>
 			</div>
@@ -141,6 +126,9 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+    <script src="bower_components/angular-md5/angular-md5.min.js"></script>
+    <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap.min.js"></script>
+    <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
     <script src="js/piouter.js"></script>
   </body>
 </html>

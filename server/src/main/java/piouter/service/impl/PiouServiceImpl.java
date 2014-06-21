@@ -36,9 +36,13 @@ public class PiouServiceImpl implements PiouService {
         List<PiouDto> piouDtos = new ArrayList<>();
         UserDto userDto = userService.getUserWithFollowing(id);
         if (userDto != null) {
-            userDto.getFollowing().forEach(u -> piouDtos.addAll(getPublished(u.getId())));
-            Collections.sort(piouDtos, PiouServiceImpl::comparePiouForTimeline);
+            Collection<UserDto> following = userDto.getFollowing();
+            Collection<UserDto> usersInTimeline = new ArrayList<UserDto>(following.size()+1);
+            usersInTimeline.addAll(following);
+            usersInTimeline.add(userDto);
+            usersInTimeline.forEach(u -> piouDtos.addAll(getPublished(u.getId())));
         }
+        Collections.sort(piouDtos, PiouServiceImpl::comparePiouForTimeline);
         return piouDtos;
     }
 

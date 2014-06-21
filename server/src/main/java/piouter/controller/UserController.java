@@ -1,11 +1,12 @@
 package piouter.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import piouter.dto.ResponseDto;
 import piouter.dto.UserDto;
 import piouter.service.UserService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("user")
@@ -14,26 +15,32 @@ public class UserController {
     private UserService userService;
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.GET,value = "{id}")
-    public UserDto getUser(@PathVariable("id") String id){
+    @RequestMapping(method = RequestMethod.GET,value = "{userId:.+}")
+    public UserDto getUser(@PathVariable("userId") String id){
         return userService.getUserWithFollowing(id);
     }
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.PUT,value = "{id}/follow/{followId}")
-    public UserDto addFollowee(@PathVariable("id") String id, @PathVariable("followId") String followId){
-        return userService.addFolloweeToUser(id, followId);
+    @RequestMapping(method = RequestMethod.PUT,value = "{userId:.+}")
+    public ResponseDto create(@PathVariable("userId") String id) {
+        return userService.create(id);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT,value = "{userId:.+}/follow/{followId}")
+    public ResponseDto addFollowing(@PathVariable("userId") String id, @PathVariable("followId") String followId){
+        return userService.addFollowingToUser(id, followId);
     }
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.DELETE,value = "{id}/follow/{followId}")
-    public UserDto removeFollowee(@PathVariable("id") String id, @PathVariable("followId") String followId){
-        return userService.removeFolloweeToUser(id, followId);
-	}
+    @RequestMapping(method = RequestMethod.DELETE,value = "{userId:.+}/follow/{followId}")
+    public ResponseDto removeFollowee(@PathVariable("userId") String id, @PathVariable("followId") String followId){
+        return userService.removeFollowingToUser(id, followId);
+    }
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.PUT,value = "{id}")
-    public ResponseDto create(@PathVariable("id") String id){
-        return userService.create(id);
+    @RequestMapping(method = RequestMethod.GET, value = "{userId:.+}/filter/{pattern}")
+    public List<UserDto> filterUsers(@PathVariable("userId") String userId,@PathVariable("pattern") String pattern){
+        return userService.getUsersMatching(userId,pattern);
+
     }
 }

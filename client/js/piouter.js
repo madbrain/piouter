@@ -1,21 +1,27 @@
-var app = angular.module('app', ['ngResource']);
-
+var app = angular.module('app', ['ngResource','angular-md5','ui.bootstrap']);
 app.constant('apiRoot', 'http://localhost:8080');
+app.constant('userId', 'ludovic.lhours@gmail.com');
 
-app.controller('TestCtrl', function ($scope, $resource, $log, $http, apiRoot) {
+app.controller('TestCtrl', function ($scope, $resource, $log, userId, apiRoot) {
     
-	$scope.user = {
-		id: null,
-		following: [],
-	};
-	$scope.filteredUsers = [ ];
-	$scope.newFolloweeName = '';
-	$scope.pious = [];
+	$scope.message = '';
 
 	var Piou = $resource(apiRoot + '/piou/:userId', {userId:'@userId'});
+    $scope.pious = Piou.query({userId:userId});
+
+	var User = $resource(apiRoot + '/user/:userId/:action/:actionId', {userId:'@userId',action:'@action',actionId:'@actionId'},{
+        matching: {method:'GET',params:{action:'filter'},isArray:true},
+        follow: {method:'PUT',params:{action:'follow'}},
+        unfollow: {method:'DELETE',params:{action:'follow'}}
+    });
+
+    $scope.user = User.get({userId:userId});
+
+	var Follower = $resource(apiRoot + '/follower/:userId', {userId:'@userId'});
+    $scope.followers = Follower.query({userId:userId});
 
     $scope.send = function () {
-        var params = {userId:$scope.user.id,message:$scope.message,date:Date.now()};
+        var params = {userId:$scope.author,message:$scope.message,date:Date.now()};
         var monPiou = new Piou(params);
         monPiou.$save(function(ret, putResponseHeaders){
             if(ret.code==0){
@@ -26,50 +32,22 @@ app.controller('TestCtrl', function ($scope, $resource, $log, $http, apiRoot) {
         });
     };
 
-	function getPiouts() {
-    	$scope.pious = Piou.query({userId: $scope.user.id});
-	}
-
-	$scope.doLogin = function() {
-		$log.info("burp");
-		$http.get(apiRoot + '/user/' + $scope.login)
-			.then(function (response) {
-				$scope.user = response.data;
-				getPiouts();
-           	});
-	};
-
-	$scope.doLogout = function() {
-		$scope.user = {id: null, following: []};
-		$scope.pious = [];
-	};
-
-    $scope.$watch('newFolloweeName', function(newValue, oldValue) {
-		if (newValue.length >= 2) {
-			$http.get(apiRoot + '/users/' + newValue)
-				.then(function (response) {
-            		$scope.filteredUsers = response.data;
-            	});
-		} else {
-            $scope.filteredUsers = [];
-		}
-    });
-
-    $scope.addFollowee = function (user) {
-		$http.put(apiRoot + '/user/' + $scope.user.id + '/follow/' + user.id)
-			.then(function (response) {
-           		$scope.user = response.data;
-				$scope.newFolloweeName = '';
-				getPiouts();
-           	});
+    $scope.getUsersMatching = function(val){
+        return User.matching({userId:userId,actionId:val}).$promise.then(function(res){
+            $log.info(res);
+            return res;
+        });
     };
 
-    $scope.removeFollowee = function (user) {
-		$http.delete(apiRoot + '/user/' + $scope.user.id + '/follow/' + user.id)
-			.then(function (response) {
-           		$scope.user = response.data;
-				getPiouts();
-           	});
+    $scope.follow = function(userToFollow){
+        User.follow({userId:userId,actionId:userToFollow.id},function(){
+            $scope.user.following.push(userToFollow);
+        });
+    };
+
+    $scope.unfollow = function(userToUnfollow){
+        User.unfollow({userId:userId,actionId:userToUnfollow.id});
+		$scope.user.following.splice($scope.user.following.indexOf(userToUnfollow), 1);
     };
 
 });
