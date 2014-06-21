@@ -111,8 +111,8 @@
                     <div class="panel-body">
                         <span ng-show="followers.length == 0">No follower</span>
                         <div ng-hide="followers.length == 0">
-                            <ul>
-                                <li ng-repeat="follower in followers" ng-bind="follower.id"/>
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="follower in followers | orderBy:'id'" ng-bind="follower.id"/>
                             </ul>
                         </div>
                     </div>
